@@ -34,9 +34,9 @@ To make it work, your modded AssetBundle should have the same name asset as the 
 - [.NET 9.0 Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) or higher
 
 ### Release
-You can download the latest nightly releases
+You can download the latest [nightly releases](https://nightly.link/Deathemonic/BA-MU/workflows/build/main)
 
-[Windows (Nightly)]() | [Linux (Nightly)]() | [MacOS (Nightly)]()
+[Windows (Nightly)](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-win-x64.zip) | [Linux (Nightly)](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-linux-x64.zip) | [MacOS (Nightly)](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-osx-arm64.zip)
 
 ## Building
 
