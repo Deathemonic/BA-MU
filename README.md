@@ -32,6 +32,8 @@ To make it work, your modded AssetBundle should have the same name asset as the 
 
 ![structure](.github/resources/structure.png)
 
+BA-MU is not a model loader
+
 ## Building
 
 1. Install [.Net 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)

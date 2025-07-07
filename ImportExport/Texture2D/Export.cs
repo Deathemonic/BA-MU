@@ -16,14 +16,14 @@ public static class Export
             var textureTemp = assetsManager.GetTemplateBaseField(assetsFileInstance, assetInfo);
             if (textureTemp == null)
             {
-                Logs.Debug($"Failed to get template field for {assetInfo.PathId}");
+                Logs.Error($"Failed to get template field for {assetInfo.PathId}");
                 return false;
             }
             
             var imageData = textureTemp.Children.FirstOrDefault(f => f.Name == "image data");
             if (imageData == null)
             {
-                Logs.Debug($"No image data found for {assetInfo.PathId}");
+                Logs.Error($"No image data found for {assetInfo.PathId}");
                 return false;
             }
 
@@ -41,7 +41,7 @@ public static class Export
             var texBaseField = assetsManager.GetBaseField(assetsFileInstance, assetInfo);
             if (texBaseField == null)
             {
-                Logs.Debug($"Failed to get base field for {assetInfo.PathId}");
+                Logs.Error($"Failed to get base field for {assetInfo.PathId}");
                 return false;
             }
 
@@ -51,7 +51,7 @@ public static class Export
 
             if (texFile is { m_Width: 0, m_Height: 0 })
             {
-                Logs.Debug("Invalid texture dimensions");
+                Logs.Error("Invalid texture dimensions");
                 return false;
             }
 
@@ -61,7 +61,7 @@ public static class Export
             var encTextureData = texFile.FillPictureData(assetsFileInstance);
             if (encTextureData == null || encTextureData.Length == 0)
             {
-                Logs.Debug("No texture data obtained");
+                Logs.Error("No texture data obtained");
                 return false;
             }
             Logs.Debug($"Got texture data of size: {encTextureData.Length}");
