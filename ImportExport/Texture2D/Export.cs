@@ -7,7 +7,7 @@ namespace BA_MU.ImportExport.Texture2D;
 
 public static class Export
 {
-    public static async Task<bool> ExportSingle(AssetsFileInstance assetsFileInstance, AssetsManager assetsManager, AssetFileInfo assetInfo, string filePath, ImageExportType exportType)
+    public static bool ExportTexture(AssetsFileInstance assetsFileInstance, AssetsManager assetsManager, AssetFileInfo assetInfo, string filePath, ImageExportType exportType)
     {
         try
         {
@@ -49,13 +49,13 @@ public static class Export
             Logs.Debug($"Texture format: {texFile.m_TextureFormat}");
             Logs.Debug($"Texture dimensions: {texFile.m_Width}x{texFile.m_Height}");
 
-            if (texFile.m_Width == 0 && texFile.m_Height == 0)
+            if (texFile is { m_Width: 0, m_Height: 0 })
             {
                 Logs.Debug("Invalid texture dimensions");
                 return false;
             }
 
-            await using var outputStream = File.OpenWrite(filePath);
+            using var outputStream = File.OpenWrite(filePath);
             Logs.Debug($"Created output stream to {filePath}");
 
             var encTextureData = texFile.FillPictureData(assetsFileInstance);

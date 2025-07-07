@@ -63,7 +63,7 @@ public class TextureExport
 
                     Logs.Debug($"Attempting to export texture: {match.Name} (TypeId: {match.TypeId}, PathId: {match.ModdedId})");
 
-                    var success = await Export.ExportSingle(
+                    var success = Export.ExportTexture(
                         assetsFileInstance, 
                         assetsManager, 
                         assetInfo, 

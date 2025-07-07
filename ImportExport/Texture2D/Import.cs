@@ -7,7 +7,7 @@ namespace BA_MU.ImportExport.Texture2D;
 
 public static class Import
 {
-    public static Task<bool> ImportSingle(AssetsFileInstance assetsFileInstance, AssetsManager assetsManager,
+    public static Task<bool> ImportTexture(AssetsFileInstance assetsFileInstance, AssetsManager assetsManager,
         AssetFileInfo assetInfo, string filePath)
     {
         try
@@ -17,14 +17,14 @@ public static class Import
             var textureTemp = assetsManager.GetTemplateBaseField(assetsFileInstance, assetInfo);
             if (textureTemp == null)
             {
-                Logs.Debug($"Failed to get template field for {assetInfo.PathId}");
+                Logs.Error($"Failed to get template field for {assetInfo.PathId}");
                 return Task.FromResult(false);
             }
 
             var imageData = textureTemp.Children.FirstOrDefault(f => f.Name == "image data");
             if (imageData == null)
             {
-                Logs.Debug($"No image data found for {assetInfo.PathId}");
+                Logs.Warn($"No image data found for {assetInfo.PathId}");
                 return Task.FromResult(false);
             }
 
@@ -42,11 +42,12 @@ public static class Import
             var texBaseField = assetsManager.GetBaseField(assetsFileInstance, assetInfo);
             if (texBaseField == null)
             {
-                Logs.Debug($"Failed to get base field for {assetInfo.PathId}");
+                Logs.Error($"Failed to get base field for {assetInfo.PathId}");
                 return Task.FromResult(false);
             }
 
             var texFile = TextureFile.ReadTextureFile(texBaseField);
+            
             Logs.Debug($"Original texture format: {texFile.m_TextureFormat}");
             Logs.Debug($"Original dimensions: {texFile.m_Width}x{texFile.m_Height}");
 
@@ -76,14 +77,14 @@ public static class Import
             }
             catch (Exception ex)
             {
-                Logs.Debug($"Failed to encode/write texture: {ex.Message}");
+                Logs.Error($"Failed to encode/write texture: {ex.Message}");
                 return Task.FromResult(false);
             }
         }
         catch (Exception ex)
         {
-            Logs.Debug($"Exception during import: {ex.Message}");
-            Logs.Debug($"Stack trace: {ex.StackTrace}");
+            Logs.Error($"Exception during import: {ex.Message}");
+            Logs.Error($"Stack trace: {ex.StackTrace}");
             return Task.FromResult(false);
         }
     }

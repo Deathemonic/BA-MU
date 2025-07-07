@@ -61,7 +61,7 @@ public class TextureImport
 
                 Logs.Debug($"Processing texture: {match.Name}");
 
-                var success = await Import.ImportSingle(assetsFileInstance, assetsManager, targetAssetInfo, filePath);
+                var success = await Import.ImportTexture(assetsFileInstance, assetsManager, targetAssetInfo, filePath);
                 
                 if (!success)
                 {
