@@ -56,18 +56,8 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --runtime ${{ matrix.rid }} --self-contained true --output ./publish/${{ matrix.rid }}
 
-      - name: Create release archive (Windows)
-        if: matrix.os == 'windows'
-        run: |
-          cd publish/${{ matrix.rid }}
-          Compress-Archive -Path * -DestinationPath ../../${{ github.event.repository.name }}-${{ matrix.rid }}.zip
-      - name: Create release archive (Unix)
-        if: matrix.os != 'windows'
-        run: |
-          cd publish/${{ matrix.rid }}
-          zip -r ../../${{ github.event.repository.name }}-${{ matrix.rid }}.zip *
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}-${{ matrix.rid }}
-          path: ${{ github.event.repository.name }}-${{ matrix.rid }}.zip
+          path: publish/${{ matrix.rid }}
