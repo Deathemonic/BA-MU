@@ -1,6 +1,6 @@
 ﻿# Blue Archive - Mod Updater
 
-A tool to re-dump AssetBundle for Blue Archive.
+A tool that re-dump AssetBundle for Blue Archive.
 
 > [!WARNING]
 > This is a `Work in Progress/Proof of Concept` 
@@ -26,3 +26,48 @@ To make it work, your modded AssetBundle should have the same name asset as the 
 
 - [ ] Handle Texture2D
 - [ ] Handle Text Asset / Spine2D
+
+
+## Install
+
+### Requirements
+- [.NET 9.0 Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) or higher
+
+### Release
+You can download the latest nightly releases
+
+[Windows (Nightly)]() | [Linux (Nightly)]() | [MacOS (Nightly)]()
+
+## Building
+
+1. Install [.Net 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+2. Clone this repository
+```sh
+git clone https://github.com/Deathemonic/BA-MU
+cd BA-MU
+```
+3. Build using `dotnet`
+```sh
+dotnet build
+```
+
+### Other Projects
+
+- [BA-AD](https://github.com/Deathemonic/BA-AD): A tool and library that downloads the latest **Blue Archive** assets.
+- [BA-AX](https://github.com/Deathemonic/BA-AX): A tool and library that extracts **Blue Archive** assets.
+- [BA-FB](https://github.com/Deathemonic/BA-FB): A tool for dumping and generating **Blue Archive** flatbuffers.
+- [BA-CY](https://github.com/Deathemonic/BA-CY): Library for handling **Blue Archive** catalogs, tables, serialization/deserialization, encryption, and hashing.
+
+
+### Contributing
+Don't like my [shitty code](https://www.reddit.com/r/programminghorror) and what to change it? Feel free to contribute by submitting a pull request or issue. Always appreciate the help.
+
+
+### Acknowledgement
+- [nesrak1/UABEA](https://github.com/nesrak1/UABEA)
+- [nesrak1/AssetsTools.NET](https://github.com/nesrak1/AssetsTools.NET)
+
+### Copyright
+Blue Archive is a registered trademark of NAT GAMES Co., Ltd., NEXON Korea Corp., and Yostar, Inc.
+This project is not affiliated with, endorsed by, or connected to NAT GAMES Co., Ltd., NEXON Korea Corp., NEXON GAMES Co., Ltd., IODivision, Yostar, Inc., or any of their subsidiaries or affiliates.
+All game assets, content, and materials are copyrighted by their respective owners and are used for informational and educational purposes only.

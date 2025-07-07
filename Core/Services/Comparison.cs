@@ -1,6 +1,7 @@
 ﻿using BA_MU.Bundle;
 using BA_MU.Core.Models;
 using BA_MU.Core.Utils;
+using ZLinq;
 
 namespace BA_MU.Core.Services;
 
@@ -27,27 +28,33 @@ public class Comparison
 
     private static List<Match> CompareAssets(Load moddedLoader, Load patchLoader, Options options)
     {
-        var results = new List<Match>();
-
         try
         {
             var moddedAssets = GetAssetInfo(moddedLoader);
             var patchAssets = GetAssetInfo(patchLoader);
 
-            results.AddRange(from patchAsset in patchAssets
-                let matchingModdedAsset = moddedAssets.FirstOrDefault(m => m.Value.Name == patchAsset.Value.Name)
-                where matchingModdedAsset.Key != 0
-                let assetTypeName = patchAsset.Value.Type.ToLowerInvariant()
-                where !options.ShouldFilterAsset(assetTypeName, patchAsset.Value.Name)
-                select new Match(matchingModdedAsset.Key, patchAsset.Key, patchAsset.Value.Name, patchAsset.Value.Type,
-                    patchAsset.Value.TypeId));
+            return patchAssets
+                .AsValueEnumerable()
+                .Where(p =>
+                    moddedAssets.AsValueEnumerable().Any(m =>
+                        m.Value.Name == p.Value.Name &&
+                        m.Value.Type == p.Value.Type))
+                .Where(p => !options.ShouldFilterAsset(p.Value.Type.ToLowerInvariant(), p.Value.Name))
+                .Select(p => new Match(
+                    moddedAssets.AsValueEnumerable().First(m =>
+                        m.Value.Name == p.Value.Name &&
+                        m.Value.Type == p.Value.Type).Key,
+                    p.Key,
+                    p.Value.Name,
+                    p.Value.Type,
+                    p.Value.TypeId))
+                .ToList();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error comparing assets: {ex.Message}");
+            return [];
         }
-
-        return results;
     }
 
     private static Dictionary<long, (string Name, string Type, int TypeId)> GetAssetInfo(Load loader)

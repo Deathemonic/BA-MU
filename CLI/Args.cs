@@ -13,9 +13,17 @@ public static class Args
     /// <param name="excludeTypes">--exclude, Comma-separated list of asset types to exclude (e.g., "gameobject,transform").</param>
     /// <param name="onlyTypes">--only, Only allow these asset types to match (e.g., "mesh,texture2d").</param>
     /// <param name="verbose">-v, Enable verbose debug output.</param>
-    public static void Run(string modded, string patch, string? includeTypes = null, string? excludeTypes = null, string? onlyTypes = null, bool verbose = false)
+    /// <param name="imageFormat">--image, Image format for texture export (tga or png). Default is tga.</param>
+    public static void Run(
+        string modded, 
+        string patch, 
+        string? includeTypes = null, 
+        string? excludeTypes = null, 
+        string? onlyTypes = null, 
+        bool verbose = false,
+        string imageFormat = "tga")
     {
         Logs.SetVerbose(verbose);
-        _ = Parse.Execute(modded, patch, includeTypes, excludeTypes, onlyTypes);
+        _ = Parse.Execute(modded, patch, includeTypes, excludeTypes, onlyTypes, imageFormat);
     }
 }

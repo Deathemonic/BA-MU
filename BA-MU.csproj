@@ -10,6 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AssetsTools.NET" Version="3.0.1" />
+        <PackageReference Include="AssetsTools.NET.Texture" Version="1.1.0-preview1" />
         <PackageReference Include="ConsoleAppFramework" Version="5.5.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -17,22 +19,8 @@
         <PackageReference Include="Kokuban" Version="0.2.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
+        <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
         <PackageReference Include="ZLinq" Version="1.4.12" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="AssetsTools.NET">
-            <HintPath>AssetsTools.Net/AssetsTools.NET.dll</HintPath>
-        </Reference>
-        <Reference Include="AssetsTools.NET.Cpp2IL">
-            <HintPath>AssetsTools.Net/AssetsTools.NET.Cpp2IL.dll</HintPath>
-        </Reference>
-        <Reference Include="AssetsTools.NET.MonoCecil">
-            <HintPath>AssetsTools.Net/AssetsTools.NET.MonoCecil.dll</HintPath>
-        </Reference>
-        <Reference Include="AssetsTools.NET.Texture">
-            <HintPath>AssetsTools.Net/AssetsTools.NET.Texture.dll</HintPath>
-        </Reference>
     </ItemGroup>
 
     <ItemGroup>
