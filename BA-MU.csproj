@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <RootNamespace>BA_MU</RootNamespace>
+        <AssemblyName>bamu</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ConsoleAppFramework" Version="5.5.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Kokuban" Version="0.2.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
+        <PackageReference Include="ZLinq" Version="1.4.12" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="AssetsTools.NET">
+            <HintPath>AssetsTools.Net/AssetsTools.NET.dll</HintPath>
+        </Reference>
+        <Reference Include="AssetsTools.NET.Cpp2IL">
+            <HintPath>AssetsTools.Net/AssetsTools.NET.Cpp2IL.dll</HintPath>
+        </Reference>
+        <Reference Include="AssetsTools.NET.MonoCecil">
+            <HintPath>AssetsTools.Net/AssetsTools.NET.MonoCecil.dll</HintPath>
+        </Reference>
+        <Reference Include="AssetsTools.NET.Texture">
+            <HintPath>AssetsTools.Net/AssetsTools.NET.Texture.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="TPK\**\*" />
+    </ItemGroup>
+
+</Project>
