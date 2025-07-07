@@ -3,7 +3,7 @@
 A tool that re-dump AssetBundle for Blue Archive.
 
 > [!WARNING]
-> This is a `Work in Progress/Proof of Concept` 
+> This is a `Work in Progress/Proof of Concept` Project
 
 
 ## How this works?
@@ -21,10 +21,11 @@ with the patch asset then it will export it as a `.json` using that JSON it will
 
 To make it work, your modded AssetBundle should have the same name asset as the patch AssetBundle.
 
+![structure](.github/resources/structure.png)
 
 ## TODO
 
-- [ ] Handle Texture2D
+- [/] Handle Texture2D
 - [ ] Handle Text Asset / Spine2D
 
 

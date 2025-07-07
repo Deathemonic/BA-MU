@@ -32,23 +32,27 @@ public class Comparison
         {
             var moddedAssets = GetAssetInfo(moddedLoader);
             var patchAssets = GetAssetInfo(patchLoader);
+            var matches = new List<Match>();
 
-            return patchAssets
+            var patchAssetGroups = patchAssets
                 .AsValueEnumerable()
-                .Where(p =>
-                    moddedAssets.AsValueEnumerable().Any(m =>
-                        m.Value.Name == p.Value.Name &&
-                        m.Value.Type == p.Value.Type))
-                .Where(p => !options.ShouldFilterAsset(p.Value.Type.ToLowerInvariant(), p.Value.Name))
-                .Select(p => new Match(
-                    moddedAssets.AsValueEnumerable().First(m =>
-                        m.Value.Name == p.Value.Name &&
-                        m.Value.Type == p.Value.Type).Key,
-                    p.Key,
-                    p.Value.Name,
-                    p.Value.Type,
-                    p.Value.TypeId))
-                .ToList();
+                .GroupBy(p => (p.Value.Name, p.Value.Type))
+                .Where(g => !options.ShouldFilterAsset(g.Key.Type.ToLowerInvariant(), g.Key.Name));
+
+            foreach (var group in patchAssetGroups)
+            {
+                var moddedAsset = moddedAssets
+                    .AsValueEnumerable()
+                    .FirstOrDefault(m => 
+                        m.Value.Name == group.Key.Name && 
+                        m.Value.Type == group.Key.Type);
+
+                if (moddedAsset.Key == 0) continue;
+                
+                matches.AddRange(group.Select(patchAsset => new Match(moddedAsset.Key, patchAsset.Key, patchAsset.Value.Name, patchAsset.Value.Type, patchAsset.Value.TypeId)));
+            }
+
+            return matches;
         }
         catch (Exception ex)
         {
