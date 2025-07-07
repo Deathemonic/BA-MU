@@ -3,31 +3,7 @@
 A tool that re-dump AssetBundle for Blue Archive.
 
 > [!WARNING]
-> This is a `Work in Progress/Proof of Concept` Project
-
-
-## How this works?
-This will export the dumps from your modded AssetBundle then import it to the original AssetBundle
-
-*Technically this should work on some Unity Games, but it's not tested. The only game I tested is MiSide*
-
-
-```shell
->> bamu --modded your_modded.bundle --patch game_asset.bundle --only "mesh"
-```
-
-This will load `your_modded.bundle` and `game_asset.bundle` then it will do a match if the modded asset `m_Name` and `PathID` matches
-with the patch asset then it will export it as a `.json` using that JSON it will import it back to patch AssetBundle then save it on another folder.
-
-To make it work, your modded AssetBundle should have the same name asset as the patch AssetBundle.
-
-![structure](.github/resources/structure.png)
-
-## TODO
-
-- [/] Handle Texture2D
-- [ ] Handle Text Asset / Spine2D
-
+> This is a `Work in Progress` Project
 
 ## Install
 
@@ -38,6 +14,23 @@ To make it work, your modded AssetBundle should have the same name asset as the 
 You can download the latest [nightly releases](https://nightly.link/Deathemonic/BA-MU/workflows/build/main)
 
 [Windows (Nightly)](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-win-x64.zip) | [Linux (Nightly)](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-linux-x64.zip) | [MacOS (Nightly)](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-osx-arm64.zip)
+
+## Usage
+This will export the dumps from your modded AssetBundle then import it to the original AssetBundle
+
+*Technically this should work on some Unity Games, but it's not tested. The only game I tested is MiSide*
+
+
+```shell
+>> bamu --modded your_modded.bundle --patch game_asset.bundle
+```
+
+This will load `your_modded.bundle` and `game_asset.bundle` then it will do a match if the modded asset `m_Name` matches
+with the patch asset then it will export it as a `.json` using that JSON it will import it back to patch AssetBundle then save it on another folder.
+
+To make it work, your modded AssetBundle should have the same name asset as the patch AssetBundle.
+
+![structure](.github/resources/structure.png)
 
 ## Building
 
@@ -72,3 +65,8 @@ Don't like my [shitty code](https://www.reddit.com/r/programminghorror) and what
 Blue Archive is a registered trademark of NAT GAMES Co., Ltd., NEXON Korea Corp., and Yostar, Inc.
 This project is not affiliated with, endorsed by, or connected to NAT GAMES Co., Ltd., NEXON Korea Corp., NEXON GAMES Co., Ltd., IODivision, Yostar, Inc., or any of their subsidiaries or affiliates.
 All game assets, content, and materials are copyrighted by their respective owners and are used for informational and educational purposes only.
+
+## TODO
+
+- [X] Handle Texture2D
+- [ ] Handle Text Asset / Spine2D
