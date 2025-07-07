@@ -6,7 +6,12 @@ using BA_MU.Helpers;
 
 namespace BA_MU.Core.Services;
 
-public class Processor(Comparison comparison, AssetExport assetExport, AssetImport assetImport, TextureExport textureExport)
+public class Processor(
+    Comparison comparison,
+    AssetExport assetExport,
+    AssetImport assetImport,
+    TextureExport textureExport,
+    TextureImport textureImport)
 {
     public async Task ProcessBundles(string moddedPath, string patchPath, Options options, ImageExportType exportType)
     {
@@ -58,8 +63,10 @@ public class Processor(Comparison comparison, AssetExport assetExport, AssetImpo
             }
 
             var importedCount = await assetImport.ImportAssets(loader, otherMatches);
+            var importedTextureCount = await textureImport.ImportTextures(loader, textureMatches);
             
-            if (importedCount > 0)
+            var totalImported = importedCount + importedTextureCount;
+            if (totalImported > 0)
             {
                 Save.SaveModdedBundle(loader, patchPath);
             }
@@ -76,8 +83,17 @@ public class Processor(Comparison comparison, AssetExport assetExport, AssetImpo
 
             if (importedCount > 0)
             {
-                Logs.Success($"Successfully imported {importedCount} assets from {FileName.GetDumpsDirectory()}");
-                Logs.Info($"{importedCount} assets have been marked as modified and will be saved");
+                Logs.Success($"Successfully imported {importedCount} regular assets from {FileName.GetDumpsDirectory()}");
+            }
+
+            if (importedTextureCount > 0)
+            {
+                Logs.Success($"Successfully imported {importedTextureCount} textures from {FileName.GetDumpsDirectory()}");
+            }
+
+            if (totalImported > 0)
+            {
+                Logs.Info($"{totalImported} assets have been marked as modified and will be saved");
             }
             else if (exportedCount == 0 && textureExportCount == 0)
             {

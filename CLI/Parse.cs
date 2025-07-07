@@ -1,5 +1,4 @@
 ﻿using AssetsTools.NET.Texture;
-
 using BA_MU.Core.Models;
 using BA_MU.Core.Services;
 using BA_MU.Helpers;
@@ -30,7 +29,8 @@ public static class Parse
         var assetExport = new AssetExport();
         var assetImport = new AssetImport();
         var textureExport = new TextureExport();
-        var processor = new Processor(comparison, assetExport, assetImport, textureExport);
+        var textureImport = new TextureImport();
+        var processor = new Processor(comparison, assetExport, assetImport, textureExport, textureImport);
 
         await processor.ProcessBundles(modded, patch, options, exportFormat);
     }
