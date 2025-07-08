@@ -1,33 +1,12 @@
 using AssetsTools.NET;
 using Newtonsoft.Json.Linq;
 
+
 namespace BA_MU.ImportExport.Assets;
 
-public class Export
+public class Export(Stream writeStream)
 {
-    private readonly Stream _stream;
-    private readonly StreamWriter _streamWriter;
-
-    public Export(Stream writeStream)
-    {
-        _stream = writeStream;
-        _streamWriter = new StreamWriter(_stream);
-    }
-
-    public void DumpRawAsset(AssetsFileReader reader, long position, uint size)
-    {
-        var assetFs = reader.BaseStream;
-        assetFs.Position = position;
-
-        var buf = new byte[4096];
-        var bytesLeft = (int)size;
-        while (bytesLeft > 0)
-        {
-            var readSize = assetFs.Read(buf, 0, Math.Min(bytesLeft, buf.Length));
-            _stream.Write(buf, 0, readSize);
-            bytesLeft -= readSize;
-        }
-    }
+    private readonly StreamWriter _streamWriter = new(writeStream);
 
     public void DumpJsonAsset(AssetTypeValueField baseField)
     {
@@ -68,7 +47,7 @@ public class Export
             var valueType = field.Value.ValueType;
 
             if (field.Value.ValueType == AssetValueType.ManagedReferencesRegistry)
-                return JsonDumpManagedReferencesRegistry(field, uabeFlavor);
+                return JsonDumpRefRegistry(field, uabeFlavor);
             object value = valueType switch
             {
                 AssetValueType.Bool => field.AsBool,
@@ -99,61 +78,48 @@ public class Export
         return jObject;
     }
 
-    private JObject JsonDumpManagedReferencesRegistry(AssetTypeValueField field, bool uabeFlavor = false)
+    private JObject JsonDumpRefRegistry(AssetTypeValueField field, bool uabeFlavor = false)
     {
         var registry = field.Value.AsManagedReferencesRegistry;
 
-        if (registry.version is >= 1 and <= 2)
+        if (registry.version is < 1 or > 2)
         {
-            var jArrayRefs = new JArray();
-            foreach (var refObj in registry.references)
+            throw new NotSupportedException($"Registry version {registry.version} not supported.");
+        }
+    
+        var jArrayRefs = new JArray(
+            registry.references.Select(refObj =>
             {
-                var typeRef = refObj.type;
-
                 var jObjManagedType = new JObject
                 {
-                    { "class", typeRef.ClassName },
-                    { "ns", typeRef.Namespace },
-                    { "asm", typeRef.AsmName }
+                    { "class", refObj.type.ClassName },
+                    { "ns", refObj.type.Namespace },
+                    { "asm", refObj.type.AsmName }
                 };
 
-                var jObjData = new JObject();
-                foreach (var child in refObj.data)
+                var jObjData = new JObject(
+                    refObj.data.Select(child => new JProperty(child.FieldName, RecurseJsonDump(child, uabeFlavor)))
+                );
+
+                var jObjRefObject = new JObject
                 {
-                    jObjData.Add(child.FieldName, RecurseJsonDump(child, uabeFlavor));
-                }
-
-                JObject jObjRefObject;
-                if (registry.version == 1)
+                    { "type", jObjManagedType },
+                    { "data", jObjData }
+                };
+            
+                if (registry.version != 1)
                 {
-                    jObjRefObject = new JObject
-                    {
-                        { "type", jObjManagedType },
-                        { "data", jObjData }
-                    };
+                    jObjRefObject.AddFirst(new JProperty("rid", refObj.rid));
                 }
-                else
-                {
-                    jObjRefObject = new JObject
-                    {
-                        { "rid", refObj.rid },
-                        { "type", jObjManagedType },
-                        { "data", jObjData }
-                    };
-                }
+            
+                return jObjRefObject;
+            })
+        );
 
-                jArrayRefs.Add(jObjRefObject);
-            }
-
-            var jObjReferences = new JObject
-            {
-                { "version", registry.version },
-                { "RefIds", jArrayRefs }
-            };
-
-            return jObjReferences;
-        }
-
-        throw new NotSupportedException($"Registry version {registry.version} not supported.");
+        return new JObject
+        {
+            { "version", registry.version },
+            { "RefIds", jArrayRefs }
+        };
     }
 }

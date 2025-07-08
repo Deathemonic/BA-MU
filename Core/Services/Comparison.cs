@@ -1,6 +1,8 @@
 ﻿using BA_MU.Bundle;
 using BA_MU.Core.Models;
 using BA_MU.Core.Utils;
+using BA_MU.Helpers;
+
 using ZLinq;
 
 namespace BA_MU.Core.Services;
@@ -32,31 +34,43 @@ public class Comparison
         {
             var moddedAssets = GetAssetInfo(moddedLoader);
             var patchAssets = GetAssetInfo(patchLoader);
-            var matches = new List<Match>();
 
             var patchAssetGroups = patchAssets
                 .AsValueEnumerable()
                 .GroupBy(p => (p.Value.Name, p.Value.Type))
-                .Where(g => !options.ShouldFilterAsset(g.Key.Type.ToLowerInvariant(), g.Key.Name));
+                .Where(g => !options.ShouldFilterAsset(g.Key.Type.ToLowerInvariant(), g.Key.Name))
+                .ToArray();
+
+            var moddedAssetsLookup = moddedAssets
+                .AsValueEnumerable()
+                .ToDictionary(m => (m.Value.Name, m.Value.Type), m => m);
+
+            var estimatedCapacity = patchAssetGroups
+                .AsValueEnumerable()
+                .Sum(g => g.Count());
+            var matches = new List<Match>(estimatedCapacity);
 
             foreach (var group in patchAssetGroups)
             {
-                var moddedAsset = moddedAssets
-                    .AsValueEnumerable()
-                    .FirstOrDefault(m => 
-                        m.Value.Name == group.Key.Name && 
-                        m.Value.Type == group.Key.Type);
+                if (!moddedAssetsLookup.TryGetValue(group.Key, out var moddedAsset))
+                    continue;
 
                 if (moddedAsset.Key == 0) continue;
-                
-                matches.AddRange(group.Select(patchAsset => new Match(moddedAsset.Key, patchAsset.Key, patchAsset.Value.Name, patchAsset.Value.Type, patchAsset.Value.TypeId)));
+
+                var newMatches = group
+                    .AsValueEnumerable()
+                    .Select(patchAsset => new Match(moddedAsset.Key, patchAsset.Key, patchAsset.Value.Name,
+                        patchAsset.Value.Type, patchAsset.Value.TypeId))
+                    .ToArray();
+
+                matches.AddRange(newMatches);
             }
 
             return matches;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error comparing assets: {ex.Message}");
+            Logs.Error($"Comparing assets: {ex.Message}");
             return [];
         }
     }
@@ -69,7 +83,7 @@ public class Comparison
         if (assetsFileInstance == null)
             return assets;
 
-        foreach (var assetInfo in assetsFileInstance.file.AssetInfos)
+        foreach (var assetInfo in assetsFileInstance.file.AssetInfos.AsValueEnumerable())
         {
             var baseField = loader.GetAssetsManager().GetBaseField(assetsFileInstance, assetInfo);
             var assetName = "Unknown";

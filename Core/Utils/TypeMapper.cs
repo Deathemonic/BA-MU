@@ -44,9 +44,7 @@ public static class TypeMapper
         { 154, "ParticleSystemRenderer" }
     };
 
-    public static string GetAssetTypeName(int typeId) =>
-        TypeMap.TryGetValue(typeId, out var name) ? name : $"Unknown_{typeId}";
+    public static string GetAssetTypeName(int typeId) => TypeMap.TryGetValue(typeId, out var name) ? name : $"Unknown_{typeId}";
 
-    public static IEnumerable<string> GetAllTypes() =>
-        TypeMap.Values.OrderBy(x => x);
+    public static IEnumerable<string> GetAllTypes() => TypeMap.Values.OrderBy(x => x);
 }

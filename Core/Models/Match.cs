@@ -1,4 +1,4 @@
-﻿using BA_MU.Core.Utils;
+﻿using BA_MU.Helpers;
 
 namespace BA_MU.Core.Models;
 
@@ -10,8 +10,8 @@ public record Match(
     int TypeId
 )
 {
-    public string CleanName => FileName.Clean(Name);
-    public string JsonFileName => FileName.CreateJsonFileName(Name, Type);
+    public string CleanName => FileManager.Clean(Name);
+    public string JsonFileName => FileManager.CreateJsonName(Name, Type);
     public string DisplayName => $"{Name} ({Type})";
     public bool HasValidName => Name != "Unknown";
 }

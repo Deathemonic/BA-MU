@@ -19,7 +19,7 @@ public static class Save
                 return;
             }
 
-            var moddedFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Modded");
+            var moddedFolderPath = Path.Combine(FileManager.GetModdedPath());
             Directory.CreateDirectory(moddedFolderPath);
 
             var originalFileName = Path.GetFileName(originalPatchPath);

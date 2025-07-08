@@ -1,27 +1,14 @@
 using AssetsTools.NET;
 using Newtonsoft.Json.Linq;
 
+using BA_MU.Helpers;
+
+
 namespace BA_MU.ImportExport.Assets;
 
-public class Import
+public class Import(Stream readStream, RefTypeManager? refMan = null)
 {
-    private readonly RefTypeManager? _refMan;
-    private readonly Stream _stream;
-    private readonly StreamReader _streamReader;
-
-    public Import(Stream readStream, RefTypeManager? refMan = null)
-    {
-        _stream = readStream;
-        _streamReader = new StreamReader(_stream);
-        _refMan = refMan;
-    }
-
-    public byte[] ImportRawAsset()
-    {
-        using var ms = new MemoryStream();
-        _stream.CopyTo(ms);
-        return ms.ToArray();
-    }
+    private readonly StreamReader _streamReader = new(readStream);
 
     public byte[]? ImportJsonAsset(AssetTypeTemplateField tempField, out string? exceptionMessage)
     {
@@ -52,8 +39,7 @@ public class Import
     {
         var align = tempField.IsAligned;
 
-        if (tempField.Children.Count == 1 && tempField.Children[0].IsArray &&
-            token.Type == JTokenType.Array)
+        if (tempField.Children.Count == 1 && tempField.Children[0].IsArray && token.Type == JTokenType.Array)
         {
             RecurseJsonImport(writer, tempField.Children[0], token);
             return;
@@ -70,7 +56,7 @@ public class Import
                     if (childToken == null)
                     {
                         WriteDefaultValue(writer, childTempField);
-                        Console.WriteLine($"Warning: Missing field {childTempField.Name} in JSON, using default value");
+                        Logs.Warn($"Missing field {childTempField.Name} in JSON, using default value");
                     }
                     else
                     {
@@ -82,7 +68,7 @@ public class Import
                 break;
             }
             case { HasValue: true, ValueType: AssetValueType.ManagedReferencesRegistry }:
-                JsonImportManagedReferencesRegistry(writer, tempField, token);
+                JsonImportRefRegistry(writer, tempField, token);
                 break;
             default:
             {
@@ -128,7 +114,7 @@ public class Import
                     case AssetValueType.ByteArray:
                         var byteArrayJArray = (JArray?)token ?? [];
                         var byteArrayData = new byte[byteArrayJArray.Count];
-                        for (var i = 0; i < byteArrayJArray.Count; i++) 
+                        for (var i = 0; i < byteArrayJArray.Count; i++)
                             byteArrayData[i] = (byte)byteArrayJArray[i];
                         writer.Write(byteArrayData.Length);
                         writer.Write(byteArrayData);
@@ -153,7 +139,7 @@ public class Import
             }
         }
     }
-    
+
     private static void WriteDefaultValue(AssetsFileWriter writer, AssetTypeTemplateField tempField)
     {
         var align = tempField.IsAligned;
@@ -162,10 +148,7 @@ public class Import
         {
             case { HasValue: false, IsArray: false }:
             {
-                foreach (var childTempField in tempField.Children)
-                {
-                    WriteDefaultValue(writer, childTempField);
-                }
+                foreach (var childTempField in tempField.Children) WriteDefaultValue(writer, childTempField);
                 if (align) writer.Align();
                 break;
             }
@@ -218,10 +201,7 @@ public class Import
                         break;
                 }
 
-                if (tempField.IsArray && tempField.ValueType != AssetValueType.ByteArray)
-                {
-                    writer.Write(0);
-                }
+                if (tempField.IsArray && tempField.ValueType != AssetValueType.ByteArray) writer.Write(0);
 
                 if (align) writer.Align();
                 break;
@@ -229,8 +209,7 @@ public class Import
         }
     }
 
-    private void JsonImportManagedReferencesRegistry(AssetsFileWriter writer, AssetTypeTemplateField tempField,
-        JToken token)
+    private void JsonImportRefRegistry(AssetsFileWriter writer, AssetTypeTemplateField tempField, JToken token)
     {
         var version = (int)ExpectAndReadField(token, "version", tempField);
         if (version is < 1 or > 2) throw new Exception($"ManagedReferencesRegistry version {version} is invalid.");
@@ -246,14 +225,20 @@ public class Import
         {
             var refdObjectToken = refIdsArray[i];
             var rid = (long)ExpectAndReadField(refdObjectToken, "rid", tempField);
+
             if (version == 1)
             {
-                if (rid != i) throw new Exception($"Field rid must be consecutive. Expected {i}, found {rid}.");
+                if (rid != i)
+                {
+                    var errorMessage = $"Field rid must be consecutive. Expected {i}, found {rid}.";
+                    Logs.Error(errorMessage);
+                    throw new InvalidDataException(errorMessage);
+                }
+        
+                continue;
             }
-            else
-            {
-                writer.Write(rid);
-            }
+
+            writer.Write(rid);
 
             var typeToken = ExpectAndReadField(refdObjectToken, "type", tempField);
             var typeRef = new AssetTypeReference
@@ -268,21 +253,23 @@ public class Import
             typeRef.WriteAsset(writer);
             if (typeRef is { ClassName: "", Namespace: "", AsmName: "" }) continue;
 
-            if (_refMan != null)
+            if (refMan == null)
             {
-                var objectTempField = _refMan.GetTemplateField(typeRef);
-                if (objectTempField == null)
-                    throw new Exception(
-                        $"Failed to get managed reference type. Wanted {typeRef.ClassName}.{typeRef.Namespace}" +
-                        $" in {typeRef.AsmName} but got a null result.");
+                Logs.Warn($"No RefTypeManager available. Skipping managed reference data for {typeRef.ClassName}");
+                return;
+            }
 
-                RecurseJsonImport(writer, objectTempField, dataToken);
-            }
-            else
+            var objectTempField = refMan.GetTemplateField(typeRef);
+
+            if (objectTempField == null)
             {
-                Console.WriteLine(
-                    $"Warning: No RefTypeManager available. Skipping managed reference data for {typeRef.ClassName}");
+                var errorMessage = $"Failed to get managed reference type. Wanted {typeRef.ClassName}.{typeRef.Namespace} in {typeRef.AsmName} but got a null result.";
+
+                Logs.Error(errorMessage);
+                throw new InvalidOperationException(errorMessage);
             }
+
+            RecurseJsonImport(writer, objectTempField, dataToken);
         }
 
         if (version == 1)

@@ -3,6 +3,7 @@ using System.Reflection;
 
 using BA_MU.Helpers;
 
+
 namespace BA_MU.Core.Utils;
 
 public static class DatabaseLoader
