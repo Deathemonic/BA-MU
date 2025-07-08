@@ -35,8 +35,7 @@ public class AssetExport
         return exportedCount;
     }
 
-    private static async Task<int> ProcessMatches(List<Match> matches, AssetsFileInstance assetsFileInstance,
-        AssetsManager assetsManager)
+    private static async Task<int> ProcessMatches(List<Match> matches, AssetsFileInstance assetsFileInstance, AssetsManager assetsManager)
     {
         var exportedCount = 0;
 
