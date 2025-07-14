@@ -14,6 +14,7 @@ public static class Args
     /// <param name="excludeTypes">--exclude, Comma-separated list of asset types to exclude (e.g., "gameobject,transform").</param>
     /// <param name="onlyTypes">--only, Only allow these asset types to match (e.g., "mesh,texture2d").</param>
     /// <param name="imageFormat">--image, Image format for texture export (tga or png). Default is tga.</param>
+    /// <param name="textFormat">--text, Content format for text asset export (txt or bytes). Default is txt.</param>
     /// <param name="verbose">-v, Enable verbose debug output.</param>
     /// <param name="types">-t, List all available asset types.</param>
     public static void Run(
@@ -24,6 +25,7 @@ public static class Args
         string? onlyTypes = null, 
         bool verbose = false,
         string imageFormat = "tga",
+        string textFormat = "txt",
         bool types = false)
     {
         if (types)
@@ -37,6 +39,6 @@ public static class Args
         }
 
         Logs.SetVerbose(verbose);
-        _ = Parse.Execute(modded, patch, includeTypes, excludeTypes, onlyTypes, imageFormat);
+        _ = Parse.Execute(modded, patch, includeTypes, excludeTypes, onlyTypes, imageFormat, textFormat);
     }
 }

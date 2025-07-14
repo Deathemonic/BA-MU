@@ -3,7 +3,8 @@
 public record Options(
     HashSet<string>? IncludeTypes = null,
     HashSet<string>? ExcludeTypes = null,
-    HashSet<string>? OnlyTypes = null
+    HashSet<string>? OnlyTypes = null,
+    string TextFormat = "txt"
 )
 {
     private static readonly HashSet<string> DefaultExclusions = new(StringComparer.OrdinalIgnoreCase)

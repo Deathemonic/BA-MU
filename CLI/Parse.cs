@@ -15,7 +15,8 @@ public static class Parse
         string? includeTypes = null,
         string? excludeTypes = null, 
         string? onlyTypes = null,
-        string imageFormat = "tga")
+        string imageFormat = "tga",
+        string textFormat = "txt")
     {
         if (string.IsNullOrEmpty(modded) || string.IsNullOrEmpty(patch))
         {
@@ -24,6 +25,7 @@ public static class Parse
         }
         
         var options = Options.FromStrings(includeTypes, excludeTypes, onlyTypes);
+        options = options with { TextFormat = textFormat };
         var exportFormat = imageFormat.Equals("png", StringComparison.InvariantCultureIgnoreCase) ? 
             ImageExportType.Png : ImageExportType.Tga;
 
@@ -32,7 +34,9 @@ public static class Parse
         var assetImport = new AssetImport();
         var textureExport = new TextureExport();
         var textureImport = new TextureImport();
-        var processor = new Processor(comparison, assetExport, assetImport, textureExport, textureImport);
+        var textExport = new TextExport();
+        var textImport = new TextImport();
+        var processor = new Processor(comparison, assetExport, assetImport, textureExport, textureImport, textExport, textImport);
 
         await processor.ProcessBundles(modded, patch, options, exportFormat);
     }
