@@ -12,9 +12,9 @@ A tool that re-dump AssetBundle for Blue Archive.
 - [.NET Runtime 9.0](https://dotnet.microsoft.com/download/dotnet/9.0) or higher
 
 ### Release
-You can download the latest [releases](https://nightly.link/Deathemonic/BA-MU/workflows/build/main)
+You can download the latest [releases](https://github.com/Deathemonic/BA-MU/releases)
 
-[Windows](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-win-x64.zip) | [Linux](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-linux-x64.zip) | [MacOS](https://nightly.link/Deathemonic/BA-MU/workflows/build/main/BA-MU-osx-arm64.zip)
+[Windows](https://github.com/Deathemonic/BA-MU/releases/latest/download/BA-MU-win-x64.zip) | [Linux](https://github.com/Deathemonic/BA-MU/releases/latest/download/BA-MU-linux-x64.zip) | [MacOS](https://github.com/Deathemonic/BA-MU/releases/latest/download/BA-MU-osx-arm64.zip)
 
 ## Usage
 
@@ -39,20 +39,25 @@ bamu --modded your_modded.bundle --patch game_asset.bundle
 
 This command will find matching assets, export the modified ones from `your_modded.bundle`, and import them into `game_asset.bundle`, saving the result in a new bundle inside the `Modded` directory.
 
-### Command-line Arguments
+<details>
+<summary>Command Line</summary>
 
-| Argument | Alias | Description | Default |
-|---|---|---|---|
-| `--modded <path>` | `-m` | **(Required)** Path to the modded asset bundle. | |
-| `--patch <path>` | `-p` | **(Required)** Path to the original/patch asset bundle. | |
-| `--imageFormat <format>` | `--image` | Sets the export format for textures. | `tga` |
-| `--textFormat <format>` | `--text` | Sets the export format for text assets. | `txt` |
-| `--includeTypes <types>` | `--include` | Comma-separated list of asset types to include (e.g., "texture2d,textasset"). | |
-| `--excludeTypes <types>` | `--exclude` | Comma-separated list of asset types to exclude. | |
-| `--onlyTypes <types>` | `--only` | Only process assets of these specific types. | |
-| `--verbose` | `-v` | Enables detailed debug logging. | `false` |
-| `--types` | `-t` | Lists all available asset types and exits. | `false` |
+### `bamu --help`
 
+| Argument                 | Alias       | Description                                                                   | Default |
+|--------------------------|-------------|-------------------------------------------------------------------------------|---------|
+| `--modded <path>`        | `-m`        | **(Required)** Path to the modded asset bundle.                               |         |
+| `--patch <path>`         | `-p`        | **(Required)** Path to the original/patch asset bundle.                       |         |
+| `--imageFormat <format>` | `--image`   | Sets the export format for textures.                                          | `tga`   |
+| `--textFormat <format>`  | `--text`    | Sets the export format for text assets.                                       | `txt`   |
+| `--includeTypes <types>` | `--include` | Comma-separated list of asset types to include (e.g., "texture2d,textasset"). |         |
+| `--excludeTypes <types>` | `--exclude` | Comma-separated list of asset types to exclude.                               |         |
+| `--onlyTypes <types>`    | `--only`    | Only process assets of these specific types.                                  |         |
+| `--verbose`              | `-v`        | Enables detailed debug logging.                                               | `false` |
+| `--types`                | `-t`        | Lists all available asset types and exits.                                    | `false` |
+
+
+</details>
 
 ## Building
 
